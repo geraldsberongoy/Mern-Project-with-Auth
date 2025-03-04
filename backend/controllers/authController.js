@@ -91,11 +91,13 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const logoutUser = (req, res) => {
+export const logoutUser = async (req, res) => {
   try {
-    res.status(200).json({ message: "Logout user" });
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error logging out: ", error);
+    res.status(500).json({ message: "Error logging out" });
   }
 };
 
