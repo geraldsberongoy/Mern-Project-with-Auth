@@ -1,20 +1,12 @@
-import nodemailer from "nodemailer";
 import { emailVerifTOkenTemplate } from "./emailTemplate.js";
+import { transporter } from "./config.js";
 import dotenv from "dotenv";
 dotenv.config();
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "geraldberongoy04@gmail.com", // Your Gmail address
-    pass: process.env.GMAIL_PASSWORD, // Use the generated App Password, NOT your actual Gmail password
-  },
-});
 
 export const sendVerificationEmail = async (email, verificationToken) => {
   try {
     const mailOptions = {
-      from: "geraldberongoy04@gmail.com", // Replace with your Gmail
+      from: process.env.MY_EMAIL,
       to: email,
       subject: "Verify Your Email Address",
       html: emailVerifTOkenTemplate.replace(
