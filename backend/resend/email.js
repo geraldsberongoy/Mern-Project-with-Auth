@@ -42,3 +42,20 @@ export const sendWelcomeEmail = async (email, name) => {
     throw new Error("Error sending welcome email");
   }
 };
+
+export const sendPasswordResetEmail = async (email, resetURL) => {
+  try {
+    const mailOptions = {
+      from: process.env.MY_EMAIL,
+      to: email,
+      subject: "Reset Your Password",
+      html: `<p>Click <a href="${resetURL}">here</a> to reset your password</p>`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password Reset Email sent: ", info.response);
+  } catch (error) {
+    console.error("Error sending welcome email: ", error);
+    throw new Error("Error sending welcome email");
+  }
+};

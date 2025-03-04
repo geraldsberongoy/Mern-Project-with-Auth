@@ -2,7 +2,12 @@ import { User } from "../models/user.js";
 import bcrypt from "bcryptjs";
 import { generateVerificationToken } from "../utils/generateVerificationToken.js";
 import { generateJWTToken } from "../utils/generateJWTToken.js";
-import { sendVerificationEmail, sendWelcomeEmail } from "../resend/email.js";
+import {
+  sendVerificationEmail,
+  sendWelcomeEmail,
+  sendPasswordResetEmail,
+} from "../resend/email.js";
+import crypto from "crypto";
 
 // METHOD: POST
 // PATH: /api/auth/signup
@@ -167,6 +172,9 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
+// METHOD: POST
+// PATH: /api/auth/forgot-password
+// DESCRIPTION: Send a password reset email
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -176,16 +184,25 @@ export const forgotPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
-
+    // Generate a reset password token and send it to the user's email
     const resetPasswordToken = crypto.randomBytes(32).toString("hex");
     const resetPasswordTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+    // Save the reset password token and expiry date to the user's document
     user.resetPasswordToken = resetPasswordToken;
     user.resetPasswordTokenExpiresAt = resetPasswordTokenExpiresAt;
     await user.save();
+
+    // Send a password reset email to the user
     await sendPasswordResetEmail(
       user.email,
       `${process.env.CLIENT_URL}/reset-password/${resetPasswordToken}`
     );
+
+    // Respond with a success message
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset email sent" });
   } catch (error) {
     console.error("Error sending password reset email: ", error);
     res.status(500).json({ message: error.message });
