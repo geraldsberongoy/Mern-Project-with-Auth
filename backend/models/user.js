@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   verificationToken: String,
-  verificationTokenExpire: Date,
+  verificationTokenExpires: Date,
 });
 
 export const User = mongoose.model("User", userSchema);
