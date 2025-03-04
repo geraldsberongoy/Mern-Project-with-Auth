@@ -49,11 +49,45 @@ export const signupUser = async (req, res) => {
   }
 };
 
-export const loginUser = (req, res) => {
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please enter all fields" });
+  }
+
   try {
-    res.status(200).json({ message: "Login user" });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User does not exist" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Wrong Password" });
+    }
+
+    const isVerified = user.isVerified;
+    if (!isVerified) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is not verified" });
+    }
+
+    generateJWTToken(res, user._id);
+
+    res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log("Error logging in user: ", error);
+    res.status(400).json({ message: error.message });
   }
 };
 
