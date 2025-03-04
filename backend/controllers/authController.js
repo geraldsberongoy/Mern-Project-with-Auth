@@ -2,7 +2,7 @@ import { User } from "../models/user.js";
 import bcrypt from "bcryptjs";
 import { generateVerificationToken } from "../utils/generateVerificationToken.js";
 import { generateJWTToken } from "../utils/generateJWTToken.js";
-import { sendVerificationEmail } from "../resend/email.js";
+import { sendVerificationEmail, sendWelcomeEmail } from "../resend/email.js";
 
 export const signupUser = async (req, res) => {
   try {
@@ -61,6 +61,36 @@ export const logoutUser = (req, res) => {
   try {
     res.status(200).json({ message: "Logout user" });
   } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  const { code } = req.body;
+  try {
+    const user = await User.findOne({ verificationToken: code });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid verification token" });
+    }
+
+    if (user.verificationTokenExpires < Date.now()) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Verification token has expired" });
+    }
+
+    // If the token is valid and not expired, you can proceed with verification
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+    await user.save();
+
+    await sendWelcomeEmail(user.email, user.name);
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    console.error("Error verifying email: ", error);
     res.status(500).json({ message: error.message });
   }
 };
