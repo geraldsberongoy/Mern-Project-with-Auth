@@ -3,11 +3,13 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <>
       <div className="flex min-h-screen items-center justify-center">
+        <Toaster />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
