@@ -254,3 +254,22 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// METHOD: GET
+// PATH: /api/auth/check-auth
+// DESCRIPTION: Check if the user is authenticated
+export const checkAuth = async (req, res) => {
+  try {
+    const user = await User.findById(req.user);
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+
+    res
+      .status(200)
+      .json({ successs: true, user: { ...user._doc, password: undefined } });
+  } catch (error) {
+    console.error("Error checking auth: ", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
