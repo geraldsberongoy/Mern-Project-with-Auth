@@ -6,6 +6,7 @@ import {
   sendVerificationEmail,
   sendWelcomeEmail,
   sendPasswordResetEmail,
+  sendResetSuccessEmail,
 } from "../resend/email.js";
 import crypto from "crypto";
 
@@ -196,7 +197,7 @@ export const forgotPassword = async (req, res) => {
     // Send a password reset email to the user
     await sendPasswordResetEmail(
       user.email,
-      `${process.env.CLIENT_URL}/reset-password/${resetPasswordToken}`
+      `${process.env.CLIENT_URL}/api/auth/reset-password/${resetPasswordToken}`
     );
 
     // Respond with a success message
@@ -205,6 +206,51 @@ export const forgotPassword = async (req, res) => {
       .json({ success: true, message: "Password reset email sent" });
   } catch (error) {
     console.error("Error sending password reset email: ", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// METHOD: POST
+// PATH: /api/auth/reset-password/:token
+// DESCRIPTION: Reset user's password
+export const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ message: "Please enter a new password" });
+    }
+
+    if (password.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordTokenExpiresAt: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordTokenExpiresAt = undefined;
+
+    await user.save();
+
+    await sendResetSuccessEmail(user.email);
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Error resetting password: ", error);
     res.status(500).json({ message: error.message });
   }
 };
