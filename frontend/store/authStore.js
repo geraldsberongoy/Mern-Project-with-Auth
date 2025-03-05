@@ -18,8 +18,15 @@ export const useAuthStore = create((set) => ({
         { withCredentials: true },
       );
       console.log(response.data);
+      set({
+        isLoading: false,
+        user: response.data.user,
+        isAuthenticated: true,
+      });
     } catch (error) {
+      set({ isLoading: false, error: error.response.data.message });
       console.log(error);
+      throw error;
     }
   },
 }));
