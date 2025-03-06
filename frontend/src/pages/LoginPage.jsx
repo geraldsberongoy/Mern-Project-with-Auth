@@ -28,7 +28,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(formData.email, formData.password);
-    navigate("/");
+    navigate("/dashboard");
     toast.success("Login successful!");
   };
 
@@ -55,6 +55,7 @@ const LoginPage = () => {
               placeholder="Enter your email"
               className="focus:ring-accent w-full rounded-lg border px-10 py-2 focus:ring-2 focus:outline-none"
               required
+              autoComplete="email"
             />
           </div>
           <div className="relative">
@@ -70,6 +71,7 @@ const LoginPage = () => {
               placeholder="Enter your password"
               className="focus:ring-accent w-full rounded-lg border px-10 py-2 focus:ring-2 focus:outline-none"
               required
+              autoComplete="current-password"
             />
           </div>
           <button
