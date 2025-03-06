@@ -53,7 +53,7 @@ const SignupPage = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-base-200 w-full max-w-md space-y-6 rounded-lg p-8 shadow-md"
+        className="bg-base-100 w-full max-w-md space-y-6 rounded-lg p-8 shadow-md"
       >
         <h2 className="text-primary text-center text-2xl font-bold">Sign Up</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
