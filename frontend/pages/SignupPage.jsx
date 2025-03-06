@@ -43,7 +43,7 @@ const SignupPage = () => {
     }
 
     await signup(formData.email, formData.password, formData.username);
-    navigate("/");
+    navigate("/verify-email");
     toast.success("Signup successful!");
   };
 
