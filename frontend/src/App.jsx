@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
-import SignupPage from "../pages/SignupPage";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 import { Toaster } from "react-hot-toast";
-import VerifyEmail from "../pages/VerifyEmail";
+import VerifyEmail from "./pages/VerifyEmail";
+import { useAuthStore } from "./store/authStore";
 
 const App = () => {
   const [theme, setTheme] = useState("dark");
+  const { isCheckingAuth, checkAuth, isAuthenticated, user } = useAuthStore();
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  console.log(user);
+  console.log(isAuthenticated);
 
   const getToasterBackgroundColor = () => {
     return theme === "dark" ? "#333" : "";
