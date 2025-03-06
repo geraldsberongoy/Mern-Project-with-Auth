@@ -273,3 +273,57 @@ export const checkAuth = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// METHOD: POST
+// PATH: /api/auth/resend-email-code
+// DESCRIPTION: Resend the verification email
+export const resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if the email is provided
+    if (!email) {
+      return res.status(400).json({ message: "Please provide an email" });
+    }
+
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+
+    // Check if the user's email is already verified
+    if (user.isVerified) {
+      return res.status(400).json({ message: "Email is already verified" });
+    }
+
+    // Generate a new verification token
+    const verificationToken = generateVerificationToken();
+
+    // Update the user's verification token and expiry date
+    user.verificationToken = verificationToken;
+    user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+    await user.save();
+
+    // Send the verification email
+    await sendVerificationEmail(user.email, verificationToken);
+
+    // Respond with a success message
+    res.status(201).json({
+      success: true,
+      message: "Verification email resent successfully",
+      user: {
+        ...user._doc,
+        password: undefined,
+        verificationToken: user.verificationToken,
+        verificationTokenExpires: user.verificationTokenExpires,
+      },
+    });
+  } catch (error) {
+    // Handle any errors that occur during the process
+    console.error("Error resending verification email: ", error);
+    res.status(500).json({ message: error.message });
+  }
+};

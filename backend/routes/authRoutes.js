@@ -7,6 +7,7 @@ import {
   forgotPassword,
   resetPassword,
   checkAuth,
+  resendVerificationEmail,
 } from "../controllers/authController.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 const router = express.Router();
@@ -24,4 +25,6 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 
 router.get("/check-auth", verifyToken, checkAuth);
+
+router.post("/resend-email-code", resendVerificationEmail);
 export default router;
