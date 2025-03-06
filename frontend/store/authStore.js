@@ -8,6 +8,7 @@ export const useAuthStore = create((set) => ({
   error: null,
   isAuthenticated: false,
   isCheckingAuth: true,
+  email: null,
 
   signup: async (email, password, name) => {
     set({ isLoading: true, error: null });
@@ -22,6 +23,7 @@ export const useAuthStore = create((set) => ({
         isLoading: false,
         user: response.data.user,
         isAuthenticated: true,
+        email: email,
       });
     } catch (error) {
       set({ isLoading: false, error: error.response.data.message });
@@ -39,6 +41,23 @@ export const useAuthStore = create((set) => ({
         { withCredentials: true },
       );
       console.log(response.data);
+    } catch (error) {
+      set({ isLoading: false, error: error.response.data.message });
+      console.log(error);
+      throw error;
+    }
+  },
+
+  resendEmailCode: async (email) => {
+    set({ error: null });
+    try {
+      const response = await axios.post(
+        `${API_URL}/resend-email-code`,
+        { email },
+        { withCredentials: true },
+      );
+      console.log(response.data);
+      set({ user: response.data.user });
     } catch (error) {
       set({ isLoading: false, error: error.response.data.message });
       console.log(error);
