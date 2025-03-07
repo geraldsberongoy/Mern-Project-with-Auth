@@ -3,16 +3,17 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   return (
-    <div class="hero bg-base-200 min-h-screen">
-      <div class="hero-content text-center">
-        <div class="max-w-md">
-          <h1 class="text-5xl font-bold">Hello there</h1>
-          <p class="py-6">
+    <div className="hero bg-base-200 min-h-screen">
+      <div className="hero-content m-10 flex-col lg:flex-row">
+        <img src="/app_logo.png" class="max-w-sm rounded-lg" />
+        <div>
+          <h1 className="text-5xl font-bold">SCAM APP</h1>
+          <p className="py-6">
             Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
             excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
             a id nisi.
           </p>
-          <div class="flex justify-center gap-4">
+          <div class="flex gap-4">
             <Link to={"/signup"}>
               <button className="btn btn-primary">Signup</button>
             </Link>
