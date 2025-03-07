@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Mail, Lock } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="items-center justify-center">
+    <div className="flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -85,6 +85,12 @@ const LoginPage = () => {
             )}
           </button>
         </form>
+        <p className="text-base-content text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link to="/signup" className="text-accent font-semibold">
+            Signup
+          </Link>
+        </p>
       </motion.div>
     </div>
   );

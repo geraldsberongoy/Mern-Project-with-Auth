@@ -4,7 +4,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { Toaster } from "react-hot-toast";
-import VerifyEmail from "./pages/VerifyEmail";
+import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { useAuthStore } from "./store/authStore";
 import DashboardPage from "./pages/DashboardPage";
 
@@ -24,6 +24,18 @@ const AuthenticatedUserRoute = ({ children }) => {
   return children;
 };
 
+const ProtectedVerifyEmailRoute = ({ children }) => {
+  const { isAuthenticated, user, email } = useAuthStore();
+  if (isAuthenticated && user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  if (!email) {
+    return <Navigate to="/signup" replace />;
+  }
+  return children;
+};
+
 const App = () => {
   const [theme, setTheme] = useState("dark");
   const { isCheckingAuth, checkAuth, isAuthenticated, user } = useAuthStore();
@@ -33,8 +45,20 @@ const App = () => {
   };
 
   useEffect(() => {
-    checkAuth();
+    const fetchAuth = async () => {
+      await checkAuth();
+    };
+
+    fetchAuth();
   }, [checkAuth]);
+
+  if (isCheckingAuth) {
+    return (
+      <div className="bg-base-300 bg-opacity-90 fixed top-0 left-0 flex h-screen w-screen items-center justify-center">
+        <span className="loading loading-spinner loading-xl"></span>
+      </div>
+    );
+  }
 
   console.log(user);
   console.log(isAuthenticated);
@@ -57,6 +81,7 @@ const App = () => {
           },
         }}
       />
+
       <button onClick={toggleTheme} className="absolute top-4 right-4">
         Toggle Theme
       </button>
@@ -78,7 +103,14 @@ const App = () => {
             </AuthenticatedUserRoute>
           }
         />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route
+          path="/verify-email"
+          element={
+            <ProtectedVerifyEmailRoute>
+              <VerifyEmailPage />
+            </ProtectedVerifyEmailRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={

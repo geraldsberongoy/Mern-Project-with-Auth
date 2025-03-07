@@ -4,14 +4,27 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const DashboardPage = () => {
-  const { logout, error, user, checkAuth } = useAuthStore();
+  const { logout, error, user, isCheckingAuth, checkAuth } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      checkAuth(); // Ensure user data is fetched on component mount
-    }
+    const fetchAuth = async () => {
+      if (!user) {
+        await checkAuth();
+      }
+    };
+
+    fetchAuth();
   }, [user, checkAuth]);
+
+  if (isCheckingAuth) {
+    console.log("Checking auth");
+    return (
+      <div className="bg-base-300 bg-opacity-90 fixed top-0 left-0 flex h-screen w-screen items-center justify-center">
+        <span className="loading loading-spinner loading-xl"></span>
+      </div>
+    );
+  }
 
   const handleLogout = async () => {
     await logout();

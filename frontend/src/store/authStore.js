@@ -22,7 +22,7 @@ export const useAuthStore = create((set) => ({
       set({
         isLoading: false,
         user: response.data.user,
-        isAuthenticated: true,
+        isAuthenticated: false,
         email: email,
       });
     } catch (error) {
@@ -43,7 +43,7 @@ export const useAuthStore = create((set) => ({
       console.log(response.data);
       set({
         isLoading: false,
-        isAuthenticated: true,
+        isAuthenticated: false,
         user: response.data.user,
       });
     } catch (error) {

@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { User, Mail, Lock } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
 const SignupPage = () => {
   const navigate = useNavigate();
   const { signup, isLoading, error: authError } = useAuthStore();
@@ -14,7 +15,7 @@ const SignupPage = () => {
     confirmPassword: "",
   });
 
-  const [error, setError] = useState(null); //for password mismatch
+  const [error, setError] = useState(null); // for password mismatch
 
   useEffect(() => {
     if (authError) {
@@ -48,7 +49,7 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -56,7 +57,7 @@ const SignupPage = () => {
         className="bg-base-100 w-full max-w-md space-y-6 rounded-lg p-8 shadow-md"
       >
         <h2 className="text-primary text-center text-2xl font-bold">Sign Up</h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-2" onSubmit={handleSubmit}>
           <div className="relative">
             <label className="text-primary mb-1 block text-sm font-medium">
               Username
@@ -128,6 +129,12 @@ const SignupPage = () => {
             )}
           </button>
         </form>
+        <p className="text-base-content text-center text-sm">
+          Already have an account?{" "}
+          <Link to="/login" className="text-accent font-semibold">
+            Login
+          </Link>
+        </p>
       </motion.div>
     </div>
   );
