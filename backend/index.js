@@ -14,7 +14,6 @@ const app = express();
 //middleware json
 app.use(express.json());
 app.use(cookieParser());
-const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:5173",
