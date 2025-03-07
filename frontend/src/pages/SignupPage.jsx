@@ -121,6 +121,7 @@ const SignupPage = () => {
           <button
             type="submit"
             className="btn btn-primary w-full rounded-lg py-2 font-bold"
+            disabled={isLoading}
           >
             {isLoading ? (
               <span className="loading loading-spinner loading-xs"></span>
