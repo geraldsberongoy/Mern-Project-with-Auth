@@ -8,7 +8,7 @@ export const useAuthStore = create((set) => ({
   isLoading: false,
   error: null,
   isAuthenticated: false,
-  isCheckingAuth: true,
+  isCheckingAuth: false,
   email: null,
   message: null,
 
@@ -80,7 +80,7 @@ export const useAuthStore = create((set) => ({
         { email, password },
         { withCredentials: true },
       );
-      console.log(response.data);
+      console.log("login successful: ", response.data);
       set({
         isLoading: false,
         user: response.data.user,

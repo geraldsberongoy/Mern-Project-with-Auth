@@ -33,11 +33,13 @@ const DashboardPage = () => {
 
   useEffect(() => {
     const fetchAuth = async () => {
-      if (!user) await checkAuth();
+      if (!user) {
+        await checkAuth();
+      }
     };
 
     fetchAuth();
-  }, [checkAuth]);
+  }, [user, checkAuth]);
 
   if (isCheckingAuth) {
     return (
@@ -113,7 +115,7 @@ const DashboardPage = () => {
           <div className="mt-auto flex flex-col gap-2 border-t pt-4">
             <div className="text-base-content flex items-center gap-3 p-3">
               <User className="text-base-content h-6 w-6" />
-              {isExpanded && (
+              {isExpanded && user && (
                 <div className="text-sm">
                   <p className="text-base-content font-semibold">{user.name}</p>
                   <p className="text-base-content text-xs">{user.email}</p>
