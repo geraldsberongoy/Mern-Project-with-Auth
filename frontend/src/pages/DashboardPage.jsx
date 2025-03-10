@@ -32,8 +32,12 @@ const DashboardPage = () => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   useEffect(() => {
-    if (!user) checkAuth();
-  }, [user, checkAuth]);
+    const fetchAuth = async () => {
+      if (!user) await checkAuth();
+    };
+
+    fetchAuth();
+  }, [checkAuth]);
 
   if (isCheckingAuth) {
     return (

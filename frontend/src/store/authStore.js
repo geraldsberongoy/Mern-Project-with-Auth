@@ -110,10 +110,10 @@ export const useAuthStore = create((set) => ({
           email: response.data.user.email,
         });
       } else {
-        set({ isCheckingAuth: false });
+        set({ isCheckingAuth: false, isAuthenticated: false, user: null });
       }
     } catch (error) {
-      set({ isCheckingAuth: false });
+      set({ isCheckingAuth: false, isAuthenticated: false, user: null });
       console.log(error);
     }
   },
@@ -124,9 +124,7 @@ export const useAuthStore = create((set) => ({
       const response = await axios.post(
         `${API_URL}/logout`,
         {},
-        {
-          withCredentials: true,
-        },
+        { withCredentials: true },
       );
       console.log(response.data);
       set({ isLoading: false, isAuthenticated: false, user: null });
